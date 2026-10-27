@@ -1,0 +1,19 @@
+# Python environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+
+# Large corpus and generated index
+data/raw/*
+data/parsed/*
+data/index/*
+
+# Preserve empty data directories
+!data/raw/.gitkeep
+!data/parsed/.gitkeep
+!data/index/.gitkeep

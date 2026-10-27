@@ -1,0 +1,15 @@
+pymupdf
+pdfplumber
+requests
+beautifulsoup4
+sentence-transformers
+faiss-cpu
+rank_bm25
+ollama
+pyyaml
+pandas
+numpy
+scikit-learn
+pytest
+ruff
+tqdm

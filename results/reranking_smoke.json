@@ -1,0 +1,68 @@
+{
+  "metrics": {
+    "question_count": 2,
+    "retrieval_labeled_questions": 2,
+    "recall_at_5": 1.0,
+    "recall_at_10": 1.0,
+    "mrr_at_10": 1.0,
+    "answerable_questions": 0,
+    "exact_substring_correctness": null,
+    "unanswerable_questions": 0,
+    "abstention_recall_on_unanswerable": null,
+    "average_latency_seconds": 14.09821321650088,
+    "evaluation_mode": "retrieval_only",
+    "note": "Retrieval metrics use document-level relevance from gold_doc_ids. Answer correctness uses exact-substring matching and requires manual validation; it is not a semantic correctness score. Abstention recall is measured only in full RAG mode and is recall on unanswerable questions, not precision."
+  },
+  "records": [
+    {
+      "id": "Q01",
+      "question": "Which regulations govern borrowing and lending transactions in Indian Rupees between residents and NRIs or PIOs?",
+      "type": "simple_factual",
+      "gold_doc_ids": [
+        "02MD787706E669D641C090B415DBE22DEE29"
+      ],
+      "retrieved_doc_ids": [
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "07MIP0101168C51C4CB845342D09E8A4A613B1F1C6D",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "03MD945692290C104C5595AEDAC89AE78788"
+      ],
+      "relevant_document_retrieved": true,
+      "answer": "",
+      "citations": [],
+      "is_refusal": false,
+      "latency_seconds": 13.541
+    },
+    {
+      "id": "Q02",
+      "question": "Why was the Internal Ombudsman mechanism established in regulated entities?",
+      "type": "simple_factual",
+      "gold_doc_ids": [
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4"
+      ],
+      "retrieved_doc_ids": [
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "383MD14012026559E41DD96224880B75EDB2B96E4BD8B",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "NOT3821EAEF90E037B4061A91775A5525510C3",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4"
+      ],
+      "relevant_document_retrieved": true,
+      "answer": "",
+      "citations": [],
+      "is_refusal": false,
+      "latency_seconds": 14.656
+    }
+  ]
+}

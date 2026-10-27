@@ -1,0 +1,89 @@
+{
+  "metrics": {
+    "question_count": 2,
+    "retrieval_labeled_questions": 2,
+    "recall_at_5": 1.0,
+    "recall_at_10": 1.0,
+    "mrr_at_10": 1.0,
+    "answerable_questions": 2,
+    "exact_substring_correctness": 0.0,
+    "unanswerable_questions": 0,
+    "abstention_recall_on_unanswerable": null,
+    "average_latency_seconds": 84.28788176950025,
+    "note": "Retrieval metrics use document-level relevance from gold_doc_ids. Answer correctness uses exact-substring matching and requires manual validation; it is not a semantic correctness score. Abstention metric is recall on unanswerable questions, not precision."
+  },
+  "records": [
+    {
+      "id": "Q01",
+      "question": "Which regulations govern borrowing and lending transactions in Indian Rupees between residents and NRIs or PIOs?",
+      "type": "simple_factual",
+      "gold_doc_ids": [
+        "02MD787706E669D641C090B415DBE22DEE29"
+      ],
+      "retrieved_doc_ids": [
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D",
+        "MD11_04012018B4D0DB4E6DA04CC4B7AF62AA03D902BE",
+        "07MIP0101168C51C4CB845342D09E8A4A613B1F1C6D",
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "02MD787706E669D641C090B415DBE22DEE29",
+        "07MIP0101168C51C4CB845342D09E8A4A613B1F1C6D",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D"
+      ],
+      "relevant_document_retrieved": true,
+      "answer": "The regulations that govern borrowing and lending transactions in Indian Rupees between residents and NRIs or PIOs are governed by the Master Direction - Borrowing and Lending transactions in Indian Rupee (INR) between Persons Resident in India and Non-Resident Indians / Persons of Indian Origin.",
+      "citations": [
+        "02MD787706E669D641C090B415DBE22DEE29.PDF (Pages 7-8)",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D.PDF (Page 14)",
+        "02MD787706E669D641C090B415DBE22DEE29.PDF (Pages 6-7)",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D.PDF (Pages 12-13)",
+        "MD11_04012018B4D0DB4E6DA04CC4B7AF62AA03D902BE.PDF (Pages 43-44)",
+        "07MIP0101168C51C4CB845342D09E8A4A613B1F1C6D.PDF (Pages 8-9)",
+        "02MD787706E669D641C090B415DBE22DEE29.PDF (Pages 1-4)",
+        "02MD787706E669D641C090B415DBE22DEE29.PDF (Pages 4-5)",
+        "07MIP0101168C51C4CB845342D09E8A4A613B1F1C6D.PDF (Pages 4-5)",
+        "09MDD593B2F2D48648C8AB3D37625C9F245D.PDF (Page 21)"
+      ],
+      "is_refusal": false,
+      "latency_seconds": 84.662
+    },
+    {
+      "id": "Q02",
+      "question": "Why was the Internal Ombudsman mechanism established in regulated entities?",
+      "type": "simple_factual",
+      "gold_doc_ids": [
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4"
+      ],
+      "retrieved_doc_ids": [
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4",
+        "NOT3821EAEF90E037B4061A91775A5525510C3",
+        "381MD140120267212A1D4EF8349448E9416EF8F2D19B5",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4"
+      ],
+      "relevant_document_retrieved": true,
+      "answer": "The text does not explicitly state why the Internal Ombudsman mechanism was established in regulated entities. However, based on the context, it can be inferred that the mechanism was established to provide an independent and impartial forum for resolving customer complaints and promoting customer service and protection in regulated entities. The mechanism is designed to ensure that customer complaints are addressed in a fair and timely manner, and that regulated entities are held accountable for their actions.",
+      "citations": [
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 11-12)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 7-9)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 12-13)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 15-16)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 17-19)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 14-15)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 13-14)",
+        "NOT3821EAEF90E037B4061A91775A5525510C3.PDF (Pages 3-4)",
+        "381MD140120267212A1D4EF8349448E9416EF8F2D19B5.PDF (Pages 3-4)",
+        "108MDINTERNALOMBUDSMANCC05402F77BE4F229B59877F341386A4.PDF (Pages 9-10)"
+      ],
+      "is_refusal": false,
+      "latency_seconds": 83.913
+    }
+  ]
+}
