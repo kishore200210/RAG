@@ -66,9 +66,9 @@ def load_config(config_path: str | Path | None = None) -> AppConfig:
     generation_data = data.get("generation", {})
 
     models_cfg = ModelsConfig(
-        generation=str(models_data.get("generation", "llama3.1:8b")),
+        generation=str(models_data.get("generation", "qwen2.5:7b")),
         embedding=str(models_data.get("embedding", "BAAI/bge-base-en-v1.5")),
-        judge=str(models_data.get("judge", "llama3.1:8b")),
+        judge=str(models_data.get("judge", "qwen2.5:7b")),
     )
 
     retrieval_cfg = RetrievalConfig(

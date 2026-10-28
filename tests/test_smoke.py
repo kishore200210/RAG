@@ -9,12 +9,12 @@ def test_ollama_llm():
     ollama = pytest.importorskip("ollama")
     try:
         response = ollama.chat(
-            model="llama3.1:8b",
+            model="qwen2.5:7b",
             messages=[{"role": "user", "content": "Reply with exactly OK"}],
             options={"temperature": 0},
         )
     except Exception as exc:
-        pytest.fail(f"Ollama/model is not ready. Start Ollama and pull llama3.1:8b. Error: {exc}")
+        pytest.fail(f"Ollama/model is not ready. Start Ollama and pull qwen2.5:7b. Error: {exc}")
     assert response["message"]["content"].strip()
 
 

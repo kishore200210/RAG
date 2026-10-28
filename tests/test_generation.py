@@ -51,7 +51,7 @@ def test_generator_with_valid_answer():
     }
 
     generator = Generator(
-        model="llama3.1:8b",
+        model="qwen2.5:7b",
         temperature=0.0,
         refusal="Not found in the provided documents.",
         ollama_client=mock_client,
@@ -75,7 +75,7 @@ def test_generator_with_valid_answer():
     mock_client.chat.assert_called_once()
     call_kwargs = mock_client.chat.call_args[1]
     assert call_kwargs["options"]["temperature"] == 0.0
-    assert call_kwargs["model"] == "llama3.1:8b"
+    assert call_kwargs["model"] == "qwen2.5:7b"
 
 
 def test_generator_refusal_when_unsupported_by_context():
@@ -85,7 +85,7 @@ def test_generator_refusal_when_unsupported_by_context():
     }
 
     generator = Generator(
-        model="llama3.1:8b",
+        model="qwen2.5:7b",
         temperature=0.0,
         refusal="Not found in the provided documents.",
         ollama_client=mock_client,
@@ -108,7 +108,7 @@ def test_generator_refusal_when_unsupported_by_context():
 
 def test_generator_refusal_when_no_chunks():
     generator = Generator(
-        model="llama3.1:8b",
+        model="qwen2.5:7b",
         temperature=0.0,
         refusal="Not found in the provided documents.",
     )

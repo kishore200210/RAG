@@ -7,8 +7,8 @@ Python 3.11 project for question answering over RBI documents. Models run locall
 ```bash
 python3.11 --version
 ollama --version
-ollama pull llama3.1:8b
-ollama run llama3.1:8b "Say hello"
+ollama pull qwen2.5:7b
+ollama run qwen2.5:7b "Say hello"
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -24,11 +24,12 @@ Then run `python -m src.ingest` to parse PDFs into Markdown files.
 
 ## Baseline RAG Pipeline
 
-The baseline RAG pipeline reads parsed Markdown files, chunks them into 512 tokens with 64-token overlap, indexes them using FAISS and `BAAI/bge-base-en-v1.5`, retrieves top-k chunks, and generates grounded answers with source citations using local Ollama `llama3.1:8b`.
+The baseline RAG pipeline reads parsed Markdown files, chunks them into 512 tokens with 64-token overlap, indexes them using FAISS and `BAAI/bge-base-en-v1.5`, retrieves top-k chunks, and generates grounded answers with source citations using local Ollama `qwen2.5:7b`.
 
 ### 1. Build or Rebuild the Index
 
 Build FAISS index over all documents in `data/parsed/`:
+
 ```bash
 python -m src.cli index
 # or via Makefile
@@ -40,6 +41,7 @@ python -m src.cli index --rebuild
 ### 2. Ask Questions
 
 Query the pipeline from the command line:
+
 ```bash
 python -m src.cli ask "What regulations govern borrowing and lending in Indian Rupees between residents and non-residents?"
 # With retrieved chunk details:
@@ -52,9 +54,9 @@ If the context does not contain the answer, the system strictly outputs:
 ### 3. Run Tests
 
 Run all unit, integration, and smoke tests:
+
 ```bash
 pytest -q
 # or
 make test
 ```
-
