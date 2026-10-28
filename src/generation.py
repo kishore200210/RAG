@@ -38,12 +38,16 @@ def build_rag_prompt(query: str, context: str, refusal_phrase: str) -> str:
 Rules:
 1. Answer using ONLY information explicitly supported by the provided context.
 2. Give a concise, direct answer. Include relevant figures, dates, conditions, and regulatory terms when applicable.
-3. Do not invent facts, speculate, or add unsupported explanations.
+3. Do not invent facts, speculate, infer unsupported conclusions, or add unsupported explanations.
 4. If the question is ambiguous and cannot be answered without clarification, briefly ask the user to clarify instead of guessing.
-5. Strict Refusal Rule: If the context does not contain sufficient information to answer a clear question, return EXACTLY:
+5. Topic similarity alone is not sufficient evidence to answer a question. Retrieved documents may discuss the general topic without containing the specific information requested.
+6. If a question asks for a specific fact, figure, date, fee, penalty, percentage, rate, limit, or requirement, verify that the context explicitly supports that specific answer. Do not substitute a related figure or general guideline for the requested information.
+7. If the context discusses the general subject but does not contain sufficient evidence for the specific answer, you MUST refuse rather than infer or extrapolate.
+8. Strict Refusal Rule: If the context does not contain sufficient information to answer a clear question, return EXACTLY:
 {refusal_phrase}
-6. When answering from context, cite the supporting source document filename(s), using the filenames shown in the context.
-7. Do not claim that a source supports information it does not contain.
+9. When answering from context, cite the supporting source document filename(s), using the filenames shown in the context.
+10. Do not claim that a source supports information it does not contain.
+11. When refusing, return only the exact refusal phrase without additional explanations or citations.
 
 Context:
 {context}
@@ -77,25 +81,47 @@ def extract_citations_from_chunks(chunks: list[dict[str, Any]]) -> list[str]:
 
 
 def is_refusal_response(response_text: str, refusal_phrase: str) -> bool:
-    """Check if the response text represents a refusal."""
+    """Check whether the response explicitly declines to answer due to missing evidence."""
     cleaned = response_text.strip().strip("'\"").strip()
     target = refusal_phrase.strip().strip("'\"").strip()
 
-    if cleaned == target:
-        return True
-
-    # Check case-insensitive equality or direct prefix/containment
     cleaned_norm = re.sub(r"[^\w\s]", "", cleaned).lower()
     target_norm = re.sub(r"[^\w\s]", "", target).lower()
-    return target_norm in cleaned_norm or cleaned_norm == target_norm
 
+    # Exact refusal phrase.
+    if cleaned_norm == target_norm:
+        return True
+
+    # Recognize explicit statements that the requested information is absent.
+    missing_evidence_patterns = [
+        r"\bnot provided in (?:the )?(?:given )?contexts?\b",
+        r"\bdo not contain any information\b",
+        r"\bdoes not contain any information\b",
+        r"\bno information (?:is )?(?:provided|available|given)\b",
+        r"\bnot mentioned in (?:the )?(?:provided )?(?:documents?|context|text)\b",
+        r"\bnot (?:possible|able) to determine\b",
+        r"\bcannot determine\b",
+        r"\bcannot be determined\b",
+        r"\bthere is no (?:mention|information|data)\b",
+        # Additional variants observed in practice from qwen2.5:7b outputs
+        r"\bdoes not contain (?:any )?(?:data|details?|information)\b",
+        r"\bdo not contain (?:any )?(?:data|details?|information)\b",
+        r"\bnot (?:found|available|present) in (?:the )?(?:given |provided )?(?:documents?|contexts?|text)\b",
+        r"\bthere is no specific (?:mention|information|data|detail)\b",
+        r"\bdoes not (?:have|include|contain) (?:the )?(?:specific )?(?:information|data|details?)\b",
+    ]
+
+    return any(
+        re.search(pattern, cleaned, flags=re.IGNORECASE)
+        for pattern in missing_evidence_patterns
+    )
 
 class Generator:
     """Local LLM answer generator via Ollama."""
 
     def __init__(
         self,
-        model: str = "llama3.1:8b",
+        model: str = "qwen2.5:7b",
         temperature: float = 0.0,
         refusal: str = "Not found in the provided documents.",
         ollama_client: Any = None,
