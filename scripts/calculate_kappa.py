@@ -69,20 +69,31 @@ def normalize_answerability(val: Any) -> str | None:
 
 
 def parse_judge_correctness(judge_pred_str: str) -> float | None:
-    """Extract numeric correctness score from Judge prediction string."""
+    """Extract and normalize the judge's correctness score."""
+    import re
+
     s = str(judge_pred_str).strip()
     if "SKIPPED" in s.upper():
         return None
-    # Look for correctness=X
-    import re
-    m = re.search(r"correctness=([0-9.]+)", s)
-    if m:
-        try:
-            return float(m.group(1))
-        except ValueError:
-            return None
-    return None
 
+    m = re.search(r"correctness=([0-9.]+)", s)
+    if not m:
+        return None
+
+    try:
+        score = float(m.group(1))
+    except ValueError:
+        return None
+
+    if not 0.0 <= score <= 1.0:
+        return None
+
+    # Convert continuous judge scores into categorical ratings.
+    if score < 0.25:
+        return 0.0
+    elif score < 0.75:
+        return 0.5
+    return 1.0
 
 def main() -> int:
     args = parse_args()
@@ -141,8 +152,13 @@ def main() -> int:
         print("\n" + "=" * 60)
         print("1. CORRECTNESS AGREEMENT (Human vs. LLM Judge)")
         print("=" * 60)
-        y_human = [item[1] for item in labeled_correctness]
-        y_judge = [item[2] for item in labeled_correctness]
+        y_human = [int(item[1] * 2) for item in labeled_correctness]
+        y_judge = [int(item[2] * 2) for item in labeled_correctness]
+
+        print("Human correctness values:", y_human)
+        print("Judge correctness values:", y_judge)
+        print("Human value types:", {type(x).__name__ for x in y_human})
+        print("Judge value types:", {type(x).__name__ for x in y_judge})
         
         labels_sorted = sorted(set(y_human + y_judge))
         
