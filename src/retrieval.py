@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any
 
 import faiss
@@ -36,10 +37,13 @@ class Retriever:
         self.reranker = reranker
         self.candidate_multiplier = max(1, candidate_multiplier)
 
+        t0_init = time.perf_counter()
         if isinstance(embedding_model, str):
             self.model = get_embedding_model(embedding_model)
         else:
             self.model = embedding_model
+        self.embedding_init_time = time.perf_counter() - t0_init
+        self.last_timings: dict[str, float] = {}
 
     def retrieve(
         self,
@@ -64,13 +68,17 @@ class Retriever:
                 len(self.chunks),
             )
 
+        t0_embed = time.perf_counter()
         query_vec = self.model.encode(
             [query.strip()],
             normalize_embeddings=True,
         )
         query_vec = np.ascontiguousarray(query_vec, dtype=np.float32)
+        t_embed = time.perf_counter() - t0_embed
 
+        t0_search = time.perf_counter()
         scores, indices = self.index.search(query_vec, candidate_k)
+        t_search = time.perf_counter() - t0_search
 
         results: list[dict[str, Any]] = []
 
@@ -92,7 +100,9 @@ class Retriever:
                 "chunk_index": chunk.get("chunk_index", 0),
             })
 
+        t_rerank = 0.0
         if self.reranker is not None and results:
+            t0_rerank = time.perf_counter()
             pairs = [
                 (query.strip(), chunk["text"])
                 for chunk in results
@@ -110,6 +120,14 @@ class Retriever:
                 key=lambda chunk: chunk["rerank_score"],
                 reverse=True,
             )
+            t_rerank = time.perf_counter() - t0_rerank
+
+        self.last_timings = {
+            "query_embedding_seconds": t_embed,
+            "faiss_retrieval_seconds": t_search,
+            "reranking_seconds": t_rerank,
+        }
+
 
         return results[:k]
 

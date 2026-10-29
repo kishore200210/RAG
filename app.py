@@ -1,5 +1,7 @@
+import ollama
 import streamlit as st
 
+from src.generation import extract_citations_from_chunks, is_refusal_response
 from src.pipeline import RAGPipeline
 
 st.set_page_config(
@@ -28,39 +30,49 @@ top_k = st.slider(
     "Number of document chunks to retrieve",
     min_value=1,
     max_value=10,
-    value=5,
+    value=pipeline.config.retrieval.top_k,
 )
 
 if st.button("Ask RBI Assistant", type="primary"):
     if not question.strip():
         st.warning("Please enter a question.")
     else:
-        with st.spinner("Searching RBI documents and generating an answer..."):
-            try:
-                result = pipeline.answer(question.strip(), top_k=top_k)
+        try:
+            with st.spinner("Searching and reranking RBI documents..."):
+                stream, chunks = pipeline.answer_stream(question.strip(), top_k=top_k)
 
-                st.subheader("Answer")
-                st.write(result["answer"])
+            st.subheader("Answer")
+            answer_text = st.write_stream(stream)
 
-                citations = result.get("citations", [])
-                if citations:
-                    st.subheader("Sources / Citations")
-                    for citation in citations:
-                        st.markdown(f"- {citation}")
+            is_refusal = is_refusal_response(answer_text, pipeline.config.generation.refusal)
+            citations = [] if is_refusal else extract_citations_from_chunks(chunks)
 
-                chunks = result.get("retrieved_chunks", [])
-                if chunks:
-                    with st.expander("View retrieved document chunks"):
-                        for i, chunk in enumerate(chunks, start=1):
-                            st.markdown(
-                                f"**{i}. {chunk.get('source_file', 'Unknown document')}**"
-                            )
-                            st.write(f"Pages: {chunk.get('pages', [])}")
-                            st.text(chunk.get("text", ""))
-                            st.divider()
+            if citations:
+                st.subheader("Sources / Citations")
+                for citation in citations:
+                    st.markdown(f"- {citation}")
 
-                if result.get("is_refusal"):
-                    st.info("The system could not find sufficient supporting information.")
+            if chunks:
+                with st.expander("View retrieved document chunks"):
+                    for i, chunk in enumerate(chunks, start=1):
+                        st.markdown(
+                            f"**{i}. {chunk.get('source_file', 'Unknown document')}**"
+                        )
+                        st.write(f"Pages: {chunk.get('pages', [])}")
+                        st.text(chunk.get("text", ""))
+                        st.divider()
 
-            except Exception as exc:
-                st.error(f"Unable to process the question: {exc}")
+            if is_refusal:
+                st.info("The system could not find sufficient supporting information.")
+
+        except (
+            ollama.ResponseError,
+            ollama.RequestError,
+            ConnectionError,
+            TimeoutError,
+            OSError,
+            RuntimeError,
+            ValueError,
+            KeyError,
+        ) as exc:
+            st.error(f"Unable to process the question: {exc}")

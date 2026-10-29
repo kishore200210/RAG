@@ -37,6 +37,10 @@ class PathsConfig:
 class GenerationConfig:
     temperature: float
     refusal: str
+    context_token_budget: int = 400
+
+
+
 
 
 @dataclass(frozen=True)
@@ -91,6 +95,7 @@ def load_config(config_path: str | Path | None = None) -> AppConfig:
     generation_cfg = GenerationConfig(
         temperature=float(generation_data.get("temperature", 0)),
         refusal=str(generation_data.get("refusal", "Not found in the provided documents.")),
+        context_token_budget=int(generation_data.get("context_token_budget", 400)),
     )
 
     return AppConfig(

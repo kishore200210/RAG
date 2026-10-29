@@ -4,9 +4,11 @@ from unittest.mock import MagicMock
 from src.generation import (
     Generator,
     build_rag_prompt,
+    estimate_token_count,
     extract_citations_from_chunks,
     format_context_chunks,
     is_refusal_response,
+    select_context_chunks,
 )
 
 
@@ -136,3 +138,45 @@ def test_is_refusal_response_matching():
     assert is_refusal_response("  Not found in the provided documents.  ", target) is True
     assert is_refusal_response("'Not found in the provided documents.'", target) is True
     assert is_refusal_response("According to RBI, the interest rate is 6.5%.", target) is False
+
+
+def test_estimate_token_count():
+    assert estimate_token_count("") == 0
+    assert estimate_token_count("Hello world") >= 2
+
+
+def test_select_context_chunks_budgeting():
+    # Create 5 chunks, each with ~100 tokens of text
+    chunks = [
+        {
+            "source_file": f"doc_{i}.pdf",
+            "pages": [i],
+            "text": f"This is chunk number {i} containing important financial regulations. " * 5,
+        }
+        for i in range(1, 6)
+    ]
+
+    # Without budget, all chunks returned
+    assert len(select_context_chunks(chunks, max_tokens=None)) == 5
+
+    # With a tight budget (e.g. 150 tokens), only top chunk(s) should be selected
+    selected = select_context_chunks(chunks, max_tokens=150)
+    assert 1 <= len(selected) <= 2
+    # Ensure rank 1 chunk is prioritized
+    assert selected[0]["source_file"] == "doc_1.pdf"
+
+
+def test_format_context_chunks_with_token_budget():
+    chunks = [
+        {
+            "source_file": f"doc_{i}.pdf",
+            "pages": [i],
+            "text": f"Important regulatory clause for doc {i}. " * 10,
+        }
+        for i in range(1, 6)
+    ]
+    formatted = format_context_chunks(chunks, max_tokens=200)
+    assert "[Context 1] Source Document: doc_1.pdf" in formatted
+    # doc_5 should not be in the tightly budgeted context
+    assert "doc_5.pdf" not in formatted
+

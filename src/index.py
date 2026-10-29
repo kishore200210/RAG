@@ -21,8 +21,13 @@ METADATA_FILENAME = "chunks.json"
 
 
 def get_embedding_model(model_name: str) -> SentenceTransformer:
-    """Load SentenceTransformer embedding model."""
-    return SentenceTransformer(model_name)
+    """Load SentenceTransformer embedding model, prioritizing cached local files."""
+    try:
+        return SentenceTransformer(model_name, local_files_only=True)
+    except (OSError, FileNotFoundError, ValueError):
+        return SentenceTransformer(model_name)
+
+
 
 
 def index_exists(index_dir: str | Path) -> bool:

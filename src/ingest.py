@@ -54,7 +54,7 @@ def main() -> None:
             row["parser"] = "pymupdf"
             manifest_rows[pdf_path.name] = row
             print(f"[OK] {pdf_path.name}: {page_count} pages")
-        except Exception as exc:  # continue so one malformed PDF doesn't stop the corpus
+        except (fitz.FileDataError, RuntimeError, OSError, ValueError, KeyError) as exc:  # continue so one malformed PDF doesn't stop the corpus
             print(f"[ERROR] {pdf_path.name}: {exc}")
 
     with MANIFEST.open("w", newline="", encoding="utf-8") as handle:
